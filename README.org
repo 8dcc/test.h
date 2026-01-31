@@ -1,0 +1,130 @@
+#+TITLE: test.h
+#+AUTHOR: 8dcc
+#+OPTIONS: toc:2
+#+STARTUP: nofold
+
+*Simple single-header testing framework for ANSI C.*
+
+This header provides a simple and portable way of testing C code. The normal
+usage of the library has the following pattern:
+
+1. Declare a test with =TEST_DECL(foo)=, as if it were a function.
+2. Write the body of the test, using assertion macros such as
+   =TEST_ASSERT_EQ(my_var, 123)= or =TEST_ASSERT_NOT_NULL(my_ptr)=.
+3. Call your tests from main using =TEST_RUN(foo)=.
+4. Optionally print the total results with =TEST_PRINT_RESULTS=.
+
+For a full example, see [[file:src/example.c][example.c]].
+
+* Public macros
+
+- Macro: TEST_DECL name ::
+
+  Declare a test with the specified name. Example:
+
+  #+begin_src C
+  TEST_DECL(foo) {
+      /* ... */
+  }
+  #+end_src
+
+- Macro: TEST_RUN name ::
+
+  Run the previously-declared test of the specified name. Example:
+
+  #+begin_src C
+  TEST_RUN(foo);
+  TEST_RUN(bar);
+  /* ... */
+  #+end_src
+
+- Macro: TEST_PRINT_RESULTS file_ptr ::
+
+  Print the results of the currently-ran tests to the specified FILE
+  pointer. Example:
+
+  #+begin_src C
+  /* ... */
+  TEST_PRINT_RESULTS(stdout);
+  #+end_src
+
+- Macro: TEST_ASSERT cond ::
+
+  Assert that the specified condition is true (non-zero). Example:
+
+  #+begin_src C
+  int my_var = 123;
+  TEST_ASSERT(my_var == 123); /* Pass */
+  TEST_ASSERT(my_var >= 456); /* Fail */
+  #+end_src
+
+- Macro: TEST_ASSERT_TRUE cond ::
+
+  Assert that the specified condition is true (non-zero). This is a wrapper for
+  =TEST_ASSERT=. Example:
+
+  #+begin_src C
+  int my_var = 123;
+  TEST_ASSERT_TRUE(my_var == 123); /* Pass */
+  TEST_ASSERT_TRUE(my_var >= 456); /* Fail */
+  #+end_src
+
+- Macro: TEST_ASSERT_FALSE cond ::
+
+  Assert that the specified condition is false (zero). Example:
+
+  #+begin_src C
+  int my_var = 123;
+  TEST_ASSERT_FALSE(my_var == 123); /* Fail */
+  TEST_ASSERT_FALSE(my_var >= 456); /* Pass */
+  #+end_src
+
+- Macro: TEST_ASSERT_EQ a b ::
+
+  Assert that A and B are equal. Example:
+
+  #+begin_src C
+  int my_var = 123;
+  TEST_ASSERT_EQ(my_var, 123); /* Pass */
+  TEST_ASSERT_EQ(my_var, 456); /* Fail */
+  #+end_src
+
+- Macro: TEST_ASSERT_NE a b ::
+
+  Assert that A and B are not equal. Example:
+
+  #+begin_src C
+  int my_var = 123;
+  TEST_ASSERT_NE(my_var, 123); /* Fail */
+  TEST_ASSERT_NE(my_var, 456); /* Pass */
+  #+end_src
+
+- Macro: TEST_ASSERT_NULL ptr ::
+
+  Assert that the specified pointer is NULL. Example:
+
+  #+begin_src C
+  TEST_ASSERT_NULL(NULL);    /* Pass */
+  TEST_ASSERT_NULL("Hello"); /* Fail */
+  #+end_src
+
+- Macro: TEST_ASSERT_NOT_NULL ptr ::
+
+  Assert that the specified pointer is not NULL. Example:
+
+  #+begin_src C
+  TEST_ASSERT_NOT_NULL(NULL);    /* Fail */
+  TEST_ASSERT_NOT_NULL("Hello"); /* Pass */
+  #+end_src
+
+ - Variable: TEST_NUM_RUN ::
+
+   Total number of currently-ran tests.
+
+ - Variable: TEST_NUM_PASSED ::
+
+   Current number of successfully passed tests.
+
+ - Variable: TEST_NUM_FAILED ::
+
+   Current number of failed tests.
