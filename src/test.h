@@ -56,8 +56,14 @@ static const char* test_cur_name     = NULL;
 #define TEST_NUM_PASSED test_num_passed
 #define TEST_NUM_FAILED test_num_failed
 
+/*
+ * Declare a test with the specified name.
+ */
 #define TEST_DECL(NAME) static void test__##NAME(void)
 
+/*
+ * Run the previously-declared test of the specified name.
+ */
 #define TEST_RUN(NAME)                                                         \
     do {                                                                       \
         test_num_run++;                                                        \
@@ -73,6 +79,9 @@ static const char* test_cur_name     = NULL;
         test_cur_name = NULL;                                                  \
     } while (0)
 
+/*
+ * Print the results of the currently-ran tests to the specified FILE pointer.
+ */
 #define TEST_PRINT_RESULTS(FILE_PTR)                                           \
     fprintf(FILE_PTR, "Tests run:    %ld\n", test_num_run);                    \
     fprintf(FILE_PTR,                                                          \
@@ -84,19 +93,41 @@ static const char* test_cur_name     = NULL;
             test_num_failed,                                                   \
             test_num_failed * 100 / test_num_run);
 
+/*
+ * Assert that the specified condition is true (non-zero).
+ */
 #define TEST_ASSERT(COND) TEST_PRETTY_ASSERT(COND, #COND)
 
+/*
+ * Assert that the specified condition is true (non-zero). Wrapper for
+ * 'TEST_ASSERT'.
+ */
 #define TEST_ASSERT_TRUE(COND) TEST_ASSERT(COND)
 
+/*
+ * Assert that the specified condition is false (zero).
+ */
 #define TEST_ASSERT_FALSE(COND)                                                \
     TEST_PRETTY_ASSERT((COND) == false, "(" #COND ") == false")
 
+/*
+ * Assert that A and B are equal.
+ */
 #define TEST_ASSERT_EQ(A, B) TEST_PRETTY_ASSERT((A) == (B), #A " == " #B)
 
+/*
+ * Assert that A and B are not equal.
+ */
 #define TEST_ASSERT_NE(A, B) TEST_PRETTY_ASSERT((A) != (B), #A " != " #B)
 
+/*
+ * Assert that the specified pointer is NULL.
+ */
 #define TEST_ASSERT_NULL(PTR) TEST_PRETTY_ASSERT((PTR) == NULL, #PTR " == NULL")
 
+/*
+ * Assert that the specified pointer not is NULL.
+ */
 #define TEST_ASSERT_NOT_NULL(PTR)                                              \
     TEST_PRETTY_ASSERT((PTR) != NULL, #PTR " != NULL")
 
