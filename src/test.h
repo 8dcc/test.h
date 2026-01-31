@@ -29,23 +29,7 @@ static bool test_cur_result          = true;
 static const char* test_cur_name     = NULL;
 
 /*----------------------------------------------------------------------------*/
-
-#define TEST_DECL(NAME) static void test__##NAME(void)
-
-#define TEST_RUN(NAME)                                                         \
-    do {                                                                       \
-        test_num_run++;                                                        \
-        test_cur_result = true;                                                \
-        test_cur_name   = #NAME;                                               \
-        test__##NAME();                                                        \
-        if (test_cur_result) {                                                 \
-            printf("[PASS] %s\n", #NAME);                                      \
-            test_num_passed++;                                                 \
-        } else {                                                               \
-            test_num_failed++;                                                 \
-        }                                                                      \
-        test_cur_name = NULL;                                                  \
-    } while (0)
+/* Private macros */
 
 #define TEST_PRINT_FAILED_ASSERT(COND_STR)                                     \
     do {                                                                       \
@@ -64,29 +48,30 @@ static const char* test_cur_name     = NULL;
         }                                                                      \
     } while (0)
 
-#define TEST_ASSERT(COND) TEST_PRETTY_ASSERT(COND, #COND)
-
-#define TEST_ASSERT_EQ(A, B) TEST_PRETTY_ASSERT((A) == (B), #A " == " #B)
-
-#define TEST_ASSERT_NE(A, B) TEST_PRETTY_ASSERT((A) != (B), #A " != " #B)
-
-#define TEST_ASSERT_NULL(PTR) TEST_PRETTY_ASSERT((PTR) == NULL, #PTR " == NULL")
-
-#define TEST_ASSERT_NOT_NULL(PTR)                                              \
-    TEST_PRETTY_ASSERT((PTR) != NULL, #PTR " != NULL")
-
-#define TEST_ASSERT_TRUE(COND)                                                 \
-    TEST_PRETTY_ASSERT((COND) == true, #COND " == true")
-
-#define TEST_ASSERT_FALSE(COND)                                                \
-    TEST_PRETTY_ASSERT((COND) == false, #COND " == false")
-
 /*----------------------------------------------------------------------------*/
+/* Public macros */
 
 /* Expose macros to the user, "hiding" the internal globals */
 #define TEST_NUM_RUN    test_num_run
 #define TEST_NUM_PASSED test_num_passed
 #define TEST_NUM_FAILED test_num_failed
+
+#define TEST_DECL(NAME) static void test__##NAME(void)
+
+#define TEST_RUN(NAME)                                                         \
+    do {                                                                       \
+        test_num_run++;                                                        \
+        test_cur_result = true;                                                \
+        test_cur_name   = #NAME;                                               \
+        test__##NAME();                                                        \
+        if (test_cur_result) {                                                 \
+            printf("[PASS] %s\n", #NAME);                                      \
+            test_num_passed++;                                                 \
+        } else {                                                               \
+            test_num_failed++;                                                 \
+        }                                                                      \
+        test_cur_name = NULL;                                                  \
+    } while (0)
 
 #define TEST_PRINT_RESULTS(FILE_PTR)                                           \
     fprintf(FILE_PTR, "Tests run:    %ld\n", test_num_run);                    \
@@ -98,5 +83,21 @@ static const char* test_cur_name     = NULL;
             "Tests failed: %ld (%ld%%)\n",                                     \
             test_num_failed,                                                   \
             test_num_failed * 100 / test_num_run);
+
+#define TEST_ASSERT(COND) TEST_PRETTY_ASSERT(COND, #COND)
+
+#define TEST_ASSERT_TRUE(COND) TEST_ASSERT(COND)
+
+#define TEST_ASSERT_FALSE(COND)                                                \
+    TEST_PRETTY_ASSERT((COND) == false, "(" #COND ") == false")
+
+#define TEST_ASSERT_EQ(A, B) TEST_PRETTY_ASSERT((A) == (B), #A " == " #B)
+
+#define TEST_ASSERT_NE(A, B) TEST_PRETTY_ASSERT((A) != (B), #A " != " #B)
+
+#define TEST_ASSERT_NULL(PTR) TEST_PRETTY_ASSERT((PTR) == NULL, #PTR " == NULL")
+
+#define TEST_ASSERT_NOT_NULL(PTR)                                              \
+    TEST_PRETTY_ASSERT((PTR) != NULL, #PTR " != NULL")
 
 #endif /* TEST_H_ */
